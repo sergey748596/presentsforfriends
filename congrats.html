@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>С праздником!</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            position: relative;
+            background-image: url('https://images.unsplash.com/photo-1547049082-1cf14440b125?q=80&w=1887&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: #8b1e3f;
+        }
+
+        /* Затемняющий оверлей */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Контейнер для плавающих смайликов */
+        .emoji-rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .emoji {
+            position: absolute;
+            bottom: -50px;
+            font-size: 24px;
+            opacity: 0.7;
+            animation: floatUp linear infinite;
+            user-select: none;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(20deg);
+                opacity: 0;
+            }
+        }
+
+        /* Гирлянда из цветов */
+        .flower-garland {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 140px;          /* достаточно для цветов и ниточек */
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;  /* цветы свисают снизу */
+            z-index: 2;              /* поверх оверлея, под сообщением (сообщение z-index 3) */
+            pointer-events: none;    /* не мешает кликам */
+            padding: 0 10px;
+            box-sizing: border-box;
+        }
+
+        .garland-item {
+            position: relative;
+            font-size: 3rem;         /* размер цветка */
+            line-height: 1;
+            animation: sway 3s ease-in-out infinite;
+            transform-origin: top center; /* качание сверху */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Ниточка, на которой висит цветок */
+        .garland-item::before {
+            content: '';
+            position: absolute;
+            top: -25px;              /* выше цветка */
+            left: 50%;
+            width: 2px;
+            height: 25px;
+            background: rgba(255, 255, 255, 0.7);
+            box-shadow: 0 0 4px rgba(255, 200, 200, 0.8);
+            transform: translateX(-50%);
+            border-radius: 1px;
+        }
+
+        /* Индивидуальные задержки анимации для каждого цветка */
+        .garland-item:nth-child(1) { animation-delay: 0s; }
+        .garland-item:nth-child(2) { animation-delay: 0.4s; }
+        .garland-item:nth-child(3) { animation-delay: 0.8s; }
+        .garland-item:nth-child(4) { animation-delay: 0.2s; }
+        .garland-item:nth-child(5) { animation-delay: 1s; }
+        .garland-item:nth-child(6) { animation-delay: 0.6s; }
+        .garland-item:nth-child(7) { animation-delay: 0.3s; }
+        .garland-item:nth-child(8) { animation-delay: 0.9s; }
+        .garland-item:nth-child(9) { animation-delay: 0.1s; }
+        .garland-item:nth-child(10) { animation-delay: 0.7s; }
+
+        /* Анимация покачивания */
+        @keyframes sway {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(5deg); }
+            75% { transform: rotate(-5deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        /* Контейнер с поздравлением */
+        .message {
+            position: relative;
+            z-index: 3;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 40px 60px;
+            text-align: center;
+            color: white;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.3);
+            max-width: 90%;
+            width: 600px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 400;
+        }
+
+        p {
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        @media (max-width: 600px) {
+            .flower-garland {
+                height: 100px;
+            }
+            .garland-item {
+                font-size: 2.2rem;
+            }
+            .garland-item::before {
+                top: -18px;
+                height: 18px;
+            }
+            .message {
+                padding: 30px 20px;
+            }
+            h1 {
+                font-size: 2.2rem;
+            }
+            p {
+                font-size: 1.2rem;
+            }
+            .emoji {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Затемнение фона -->
+    <div class="overlay"></div>
+
+    <!-- Гирлянда из цветов -->
+    <div class="flower-garland">
+        <div class="garland-item">🌹</div>
+        <div class="garland-item">🌷</div>
+        <div class="garland-item">🌸</div>
+        <div class="garland-item">🌺</div>
+        <div class="garland-item">🌼</div>
+        <div class="garland-item">🌻</div>
+        <div class="garland-item">🌿</div>
+        <div class="garland-item">🌸</div>
+        <div class="garland-item">🌷</div>
+        <div class="garland-item">🌹</div>
+    </div>
+
+    <!-- Контейнер для плавающих смайликов -->
+    <div class="emoji-rain" id="emojiRain"></div>
+
+    <!-- Основное поздравление -->
+    <div class="message">
+        <h1>С 8 марта, <span id="name"></span>!</h1>
+        <p>От всей души поздравляю с 8 Марта! Пусть этот день будет наполнен светом, радостью и вниманием близких. Желаю вам вдохновения, весеннего обновления и всего самого доброго.</p>
+    </div>
+
+    <script>
+        // Массив смайликов (можно добавить любые)
+        const emojis = ['🌸', '🌷', '🌹', '🌺', '🌸', '💐', '🌼', '🌻', '🌸', '❤️', '🧡', '💛', '💚', '💙', '💜', '🩷', '😊', '🥰', '😍', '💋', '✨', '🌟', '💫', '🎀', '💝', '🌿'];
+
+        // Контейнер
+        const container = document.getElementById('emojiRain');
+
+        // Количество смайликов
+        const count = 50; // можно изменить
+
+        for (let i = 0; i < count; i++) {
+            const emoji = document.createElement('div');
+            emoji.className = 'emoji';
+            // Случайный смайлик из массива
+            emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+            
+            // Случайные параметры анимации
+            const duration = Math.random() * 8 + 5; // от 5 до 13 секунд
+            const delay = Math.random() * -10; // отрицательная задержка, чтобы смайлики начинали не одновременно
+            const left = Math.random() * 100; // позиция слева в %
+            const fontSize = Math.floor(Math.random() * 30) + 20; // размер от 20 до 50px
+            
+            emoji.style.left = left + '%';
+            emoji.style.fontSize = fontSize + 'px';
+            emoji.style.animationDuration = duration + 's';
+            emoji.style.animationDelay = delay + 's';
+            emoji.style.opacity = Math.random() * 0.6 + 0.3; // от 0.3 до 0.9
+            
+            container.appendChild(emoji);
+        }
+
+        // Отображение имени из URL
+        const params = new URLSearchParams(window.location.search);
+        document.getElementById('name').textContent = params.get('name') || 'дорогая';
+    </script>
+</body>
+</html>

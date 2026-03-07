@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Виртуальная открытка к 8 марта</title>
+    <style>
+        /* Сброс отступов и базовые настройки */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-image: url(preview.JPG);
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-attachment: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            padding: 20px;
+            font-family: 'Segoe UI', 'Roboto', system-ui, sans-serif;
+            position: relative;
+        }
+
+        /* Затемняющий оверлей */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Контейнер-карточка */
+        .flip-card {
+            position: relative;
+            z-index: 2;
+            width: 90%;
+            max-width: 500px;
+            margin-left: 5%;
+            cursor: pointer;
+            perspective: 2000px;
+        }
+
+        /* Внутренний вращающийся блок */
+        .flip-inner {
+            position: relative;
+            width: 100%;
+            transition: transform 0.6s ease-in-out;
+            transform-style: preserve-3d;
+        }
+
+        /* Общие стили для всех сторон */
+        .side {
+            border-radius: 40px 12px 40px 12px;
+            box-shadow: 0 25px 40px -10px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+            overflow: hidden;
+            backface-visibility: hidden;
+        }
+
+        /* Лицевая сторона (текст) – она в потоке, задаёт высоту */
+        .front {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            text-shadow: 2px 4px 10px rgba(0, 0, 0, 0.5);
+            padding: 2.5rem 3rem;
+            transform: rotateY(0deg);
+            font-size: 36px;
+        }
+
+        /* Сторона с картинкой и стороной формы – абсолютные, занимают всю область родителя */
+        .side-image, .side-form {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 40px 12px 40px 12px;
+            overflow: hidden;
+            backface-visibility: hidden;
+        }
+
+        .side-image {
+            transform: rotateY(120deg);
+            background: #f0f0f0; /* запасной фон */
+        }
+
+        .side-image img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            /* картинка заполнит всю область */
+        }
+
+        .side-form {
+            transform: rotateY(240deg);
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            color: #fff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        /* Стили формы */
+        .feedback-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            width: 100%;
+        }
+
+        .feedback-form label {
+            font-size: 1.2rem;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+
+        .feedback-form input {
+            padding: 0.8rem 1.2rem;
+            border: none;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            color: white;
+            font-size: 1.1rem;
+            outline: 2px solid transparent;
+            transition: outline 0.2s;
+        }
+
+        .feedback-form input:focus {
+            outline: 2px solid rgba(255, 200, 200, 0.7);
+        }
+
+        .feedback-form input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+            font-style: italic;
+        }
+
+        .feedback-form button {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 30px;
+            background: #d44e5c;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .feedback-form button:hover {
+            background: #b53e4a;
+        }
+
+        .feedback-form button:active {
+            transform: scale(0.97);
+        }
+
+        /* Декоративный элемент на лицевой стороне */
+        .front::after {
+            content: "🌸";
+            display: block;
+            text-align: right;
+            font-size: 2.2rem;
+            margin-top: 0.8rem;
+            opacity: 0.9;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+
+        /* Адаптация для мобильных */
+        @media (max-width: 600px) {
+            .flip-card {
+                margin-left: 3%;
+                width: 94%;
+            }
+            .front {
+                padding: 1.8rem 1.5rem;
+                border-radius: 30px 8px 30px 8px;
+            }
+            .side-image, .side-form {
+                border-radius: 30px 8px 30px 8px;
+            }
+            .front p {
+                font-size: 1.6rem;
+            }
+            .front::after {
+                font-size: 1.8rem;
+            }
+            .feedback-form label {
+                font-size: 1rem;
+            }
+            .feedback-form input {
+                padding: 0.6rem 1rem;
+                font-size: 1rem;
+            }
+            .feedback-form button {
+                font-size: 1.1rem;
+                padding: 0.6rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="flip-card" id="flipCard">
+        <div class="flip-inner" id="flipInner">
+            <!-- Лицевая сторона с текстом -->
+            <div class="side front">
+                <p>Мне надоели скучные сообщения в мессенджерах! Хочется удивить и порадовать вас! Примите это поздравление от меня - стильное и свежее, эстетичное и сногсшибательное! С праздником!!!</p>
+            </div>
+            <!-- Задняя сторона 1: картинка -->
+            <div class="side-image">
+                <img src="congratulations.JPG" alt="Поздравительная открытка">
+            </div>
+            <!-- Задняя сторона 2: форма обратной связи -->
+            <div class="side-form">
+                <form class="feedback-form" id="feedbackForm">
+                    <label for="name">Введите фамилию и инициалы:</label>
+                    <input type="text" id="name" name="name" placeholder="например, Иванова И.И." required>
+                    <button type="submit">Отправить и получить поздравление →</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const flipCard = document.getElementById('flipCard');
+        const flipInner = document.getElementById('flipInner');
+        const form = document.getElementById('feedbackForm');
+
+        let state = 0; // 0 - текст, 1 - картинка, 2 - форма
+
+        // Функция поворота на нужный угол
+        function rotateCard() {
+            const angle = state * -120; // 0, -120, -240 градусов
+            flipInner.style.transform = `rotateY(${angle}deg)`;
+        }
+
+        // Обработчик клика по карточке (переключение стороны)
+        flipCard.addEventListener('click', function(e) {
+            // Если клик был по полю ввода, кнопке или самой форме — не переключаем
+            if (e.target.closest('input, button, form')) {
+                return;
+            }
+            // Переключаем состояние
+            state = (state + 1) % 3;
+            rotateCard();
+        });
+
+        // Обработчик отправки формы
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); // не перезагружаем страницу
+            const nameInput = document.getElementById('name');
+            const nameValue = nameInput.value.trim();
+
+            if (!nameValue) {
+                alert('Пожалуйста, введите фамилию и инициалы.');
+                return;
+            }
+
+            // Перенаправляем на отдельную страницу с параметром
+            // Предполагается, что рядом с этим файлом лежит congrats.html
+            // В нём можно через JavaScript получить параметр и вывести персонализированное поздравление
+            window.location.href = `congrats.html?name=${encodeURIComponent(nameValue)}`;
+        });
+
+        // Предотвращаем всплытие кликов с формы (чтобы случайно не переключить сторону при клике на пустое место формы)
+        form.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+
+        // Начальное состояние (текст)
+        rotateCard();
+    </script>
+
+    <!-- 
+        Пример содержимого для файла congrats.html:
+        <!DOCTYPE html>
+        <html>
+        <head><meta charset="UTF-8"><title>С праздником!</title></head>
+        <body style="background: #f9eef0; text-align: center; padding: 50px; font-family: sans-serif;">
+            <h1>С 8 марта, <span id="name"></span>!</h1>
+            <p>Пусть весна подарит радость и цветы!</p>
+            <script>
+                const params = new URLSearchParams(window.location.search);
+                document.getElementById('name').textContent = params.get('name') || 'дорогая';
+            </script>
+        </body>
+        </html>
+    -->
+</body>
+</html>
